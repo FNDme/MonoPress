@@ -48,9 +48,7 @@
     "tw-animate-css": "^1.3.3",
     "typescript": "5.3.3"
   },
-  "manifest": {
-    "host_permissions": [
-      "https://*/*"
-    ]
+  "action": {
+    "default_title": "Open Monopress"
   }
 }
