@@ -30,7 +30,7 @@ export async function parseArticle(url: string): Promise<ArticleResponse> {
 
   try {
     // Fetch the article content directly using fetch API
-    const response = await fetch(url)
+    const response = await fetch(`https://api.cors.lol/?url=${url}`)
     if (!response.ok) {
       throw new Error(`Failed to fetch article: ${response.statusText}`)
     }

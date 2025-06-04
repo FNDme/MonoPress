@@ -40,7 +40,7 @@ export function RssProvider({ children }: { children: React.ReactNode }) {
         return cachedData.data
       }
 
-      const response = await fetch(url)
+      const response = await fetch(`https://api.cors.lol/?url=${url}`)
 
       if (!response.ok) {
         throw new Error(`Failed to fetch feed: ${response.statusText}`)
