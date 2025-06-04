@@ -1,50 +1,42 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { CalendarDays, EyeOff, User, Globe } from "lucide-react";
-import { Link } from "react-router-dom";
-
-import type { Post } from "@/types/feed";
-import { useStore } from "@/store/store";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+import { useStore } from "@/store/store"
+import type { Post } from "@/types/feed"
+import { CalendarDays, EyeOff, Globe, User } from "lucide-react"
+import { Link } from "react-router-dom"
 
 export default function PostCard({
   post,
-  className,
+  className
 }: {
-  post: Post;
-  className?: string;
+  post: Post
+  className?: string
 }) {
-  const { link, title, description, image, tags, date, author, source } = post;
-  const { discardId, undiscardId, discardedIds } = useStore();
+  const { link, title, description, image, tags, date, author, source } = post
+  const { discardId, undiscardId, discardedIds } = useStore()
 
   const handleToggleDiscard = (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation()
     if (discardedIds.includes(link)) {
-      undiscardId(link);
+      undiscardId(link)
     } else {
-      discardId(link);
+      discardId(link)
     }
-  };
+  }
 
   return (
     <Card
       className={cn(
-        "group max-h-[500px] overflow-hidden transition-all duration-300 hover:shadow-lg p-0 gap-0 md:max-w-md",
+        "group max-h-[500px] gap-0 overflow-hidden p-0 transition-all duration-300 hover:shadow-lg md:max-w-md",
         className
-      )}
-    >
+      )}>
       <CardHeader className="relative p-0">
         <Link
           to={`/reader/${encodeURIComponent(link)}`}
           rel="noopener noreferrer"
-          className="relative"
-        >
+          className="relative">
           {image && (
             <img
               src={image}
@@ -58,18 +50,16 @@ export default function PostCard({
           size="icon"
           className="absolute right-2 top-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           onClick={handleToggleDiscard}
-          title="Discard post"
-        >
+          title="Discard post">
           <EyeOff className="h-4 w-4" />
         </Button>
       </CardHeader>
-      <CardContent className="p-4 flex-1 sm:p-6 max-h-[446px] overflow-hidden flex flex-col relative">
+      <CardContent className="relative flex max-h-[446px] flex-1 flex-col overflow-hidden p-4 sm:p-6">
         <Link
           to={`/reader/${encodeURIComponent(link)}`}
           rel="noopener noreferrer"
-          className="hover:underline"
-        >
-          <h3 className="mb-2 line-clamp-3 text-lg font-semibold sm:text-xl ">
+          className="hover:underline">
+          <h3 className="mb-2 line-clamp-3 text-lg font-semibold sm:text-xl">
             {title}
           </h3>
         </Link>
@@ -82,18 +72,17 @@ export default function PostCard({
             ))}
           </div>
         )}
-        <p className="text-sm text-muted-foreground sm:text-base max-h-full break-words">
+        <p className="max-h-full break-words text-sm text-muted-foreground sm:text-base">
           {description}
         </p>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent opacity-30" />
       </CardContent>
       <CardFooter className="bg-muted/50 flex flex-col items-stretch justify-between gap-2 px-4 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4 sm:px-6 sm:py-4">
         <div className="flex w-full flex-wrap items-center gap-2">
           {date && (
             <div
               className="flex min-w-0 items-center gap-2"
-              title={new Date(date).toLocaleString()}
-            >
+              title={new Date(date).toLocaleString()}>
               <CalendarDays className="h-4 w-4 shrink-0" />
               <span className="whitespace-nowrap">
                 {new Date(date).toLocaleDateString()}
@@ -109,9 +98,8 @@ export default function PostCard({
           {source && (
             <Link
               to={`/feed/${encodeURIComponent(source.sourceUrl)}`}
-              className="flex min-w-0 items-center gap-2 hover:text-foreground transition-colors"
-              title={source.sourceName || source.title}
-            >
+              className="flex min-w-0 items-center gap-2 transition-colors hover:text-foreground"
+              title={source.sourceName || source.title}>
               <Globe className="h-4 w-4 shrink-0" />
               <span className="w-full truncate">
                 {source.sourceName || source.title}
@@ -121,5 +109,5 @@ export default function PostCard({
         </div>
       </CardFooter>
     </Card>
-  );
+  )
 }
