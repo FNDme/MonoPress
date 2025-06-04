@@ -54,11 +54,11 @@ export default function FeedPage() {
       <div className="flex h-screen flex-col bg-background">
         <Header />
         <div className="flex-1 overflow-auto">
-          <div className="mx-auto flex max-w-[888px] flex-row flex-wrap justify-center gap-6 p-8">
+          <div className="mx-auto flex w-full max-w-[888px] flex-row flex-wrap justify-center gap-6 p-8 pt-6">
             {Array.from({ length: 10 }).map((_, index) => (
               <div
                 key={index}
-                className="h-[500px] w-full max-w-[450px] animate-pulse rounded-lg bg-muted lg:w-[400px]"
+                className="h-[500px] w-full max-w-[450px] animate-pulse rounded-xl bg-muted lg:w-[400px]"
               />
             ))}
           </div>
@@ -70,7 +70,7 @@ export default function FeedPage() {
 
   return (
     <div className="flex h-screen flex-col bg-background">
-      <Header isFeedPage={!url} />
+      <Header type={!url ? "main" : "singleFeed"} />
       {visiblePosts.length === 0 ? (
         <div className="mx-auto my-12 flex w-full max-w-[888px] flex-1 justify-center overflow-auto">
           <Alert className="h-fit w-fit max-w-[400px]">

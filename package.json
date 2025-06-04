@@ -1,7 +1,7 @@
 {
   "name": "monopress",
   "displayName": "Monopress",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "rss feed",
   "author": "Gabriel Luis",
   "scripts": {

@@ -12,7 +12,11 @@ import { useStore } from "@/store/store"
 import { Eye, EyeOff, Globe, Newspaper, Settings } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 
-function Header({ isFeedPage = false }: { isFeedPage?: boolean }) {
+function Header({
+  type = "default"
+}: {
+  type?: "default" | "main" | "singleFeed"
+}) {
   const navigate = useNavigate()
   const { showDiscarded, toggleDiscarded, discardedIds } = useStore()
   const { postsByFeed } = useRss()
@@ -27,7 +31,7 @@ function Header({ isFeedPage = false }: { isFeedPage?: boolean }) {
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          {isFeedPage && (discardedIds.length > 0 || showDiscarded) && (
+          {type === "main" && (discardedIds.length > 0 || showDiscarded) && (
             <Button variant="ghost" size="icon" onClick={toggleDiscarded}>
               {showDiscarded ? (
                 <Eye className="h-4 w-4" />
@@ -62,7 +66,7 @@ function Header({ isFeedPage = false }: { isFeedPage?: boolean }) {
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-          {isFeedPage ? (
+          {type === "main" ? (
             <Button
               variant="ghost"
               size="icon"
