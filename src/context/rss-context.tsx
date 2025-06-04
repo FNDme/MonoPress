@@ -10,6 +10,7 @@ import React, {
 
 import type { FeedCache, Post } from "../types/feed"
 import { parseFeed } from "../utils/feedParser"
+import { fetchThroughBackground } from "../utils/fetchProxy"
 
 // Cache duration in milliseconds (5 minutes)
 const CACHE_DURATION = 5 * 60 * 1000
@@ -40,13 +41,7 @@ export function RssProvider({ children }: { children: React.ReactNode }) {
         return cachedData.data
       }
 
-      const response = await fetch(`https://api.cors.lol/?url=${url}`)
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch feed: ${response.statusText}`)
-      }
-
-      const xml = await response.text()
+      const xml = await fetchThroughBackground(url)
       const parser = new DOMParser()
       const xmlDoc = parser.parseFromString(xml, "text/xml")
       const posts = parseFeed(xmlDoc)

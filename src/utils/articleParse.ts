@@ -6,6 +6,7 @@ import {
   convertToAbsoluteUrl,
   sanitizeContent
 } from "../utils/htmlUtils.js"
+import { fetchThroughBackground } from "./fetchProxy"
 
 type ArticleResponse = {
   title: string
@@ -29,20 +30,15 @@ export async function parseArticle(url: string): Promise<ArticleResponse> {
   }
 
   try {
-    // Fetch the article content directly using fetch API
-    const response = await fetch(`https://api.cors.lol/?url=${url}`)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch article: ${response.statusText}`)
-    }
-
-    let html = await response.text()
+    // Fetch the article content through the background service worker
+    const html = await fetchThroughBackground(url)
 
     // Remove style tags to prevent CSS parsing errors
-    html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    const cleanedHtml = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
 
     // Create a temporary DOM element to parse the HTML
     const parser = new DOMParser()
-    const doc = parser.parseFromString(html, "text/html")
+    const doc = parser.parseFromString(cleanedHtml, "text/html")
 
     // Try to get the title from meta tags first
     let title = ""

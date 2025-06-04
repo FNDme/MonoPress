@@ -1,7 +1,7 @@
 {
   "name": "monopress",
   "displayName": "Monopress",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "rss feed",
   "author": "Gabriel Luis",
   "scripts": {
@@ -50,5 +50,11 @@
   },
   "action": {
     "default_title": "Open Monopress"
+  },
+  "manifest": {
+    "host_permissions": [
+      "https://*/*",
+      "http://*/*"
+    ]
   }
 }
