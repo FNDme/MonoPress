@@ -18,27 +18,32 @@ export default function FeedPage() {
   const { discardedIds, showDiscarded, setShowDiscarded } = useStore()
   const { posts, postsByFeed, loading, error } = useRss()
 
-  const decodedUrl = url ? decodeURIComponent(url) : ""
+  const decodedUrl = useMemo(() => {
+    return url ? decodeURIComponent(url) : ""
+  }, [url])
 
   const visiblePosts = useMemo(() => {
     if (url) {
       return postsByFeed[decodedUrl].filter(
-        (post) => !discardedIds.includes(post.id)
+        (post) => !discardedIds.includes(post.link)
       )
     }
     if (showDiscarded)
-      return posts.filter((post) => discardedIds.includes(post.id))
-    return posts.filter((post) => !discardedIds.includes(post.id))
+      return posts.filter((post) => discardedIds.includes(post.link))
+    return posts.filter((post) => !discardedIds.includes(post.link))
   }, [posts, discardedIds, showDiscarded, decodedUrl, postsByFeed])
 
   useEffect(() => {
     setShowDiscarded(false)
   }, [])
 
-  const feedName =
-    visiblePosts[0]?.source?.sourceName ||
-    visiblePosts[0]?.source?.title ||
-    decodedUrl
+  const feedName = useMemo(() => {
+    return (
+      visiblePosts[0]?.source?.sourceName ||
+      visiblePosts[0]?.source?.title ||
+      decodedUrl
+    )
+  }, [visiblePosts, decodedUrl])
 
   if (error) {
     return (

@@ -32,7 +32,7 @@ export default function PostCard({
         "group max-h-[500px] gap-0 overflow-hidden p-0 transition-all duration-300 hover:shadow-lg md:max-w-md",
         className
       )}>
-      <CardHeader className="relative p-0">
+      <CardHeader className="relative">
         <Link
           to={`/reader/${encodeURIComponent(link)}`}
           rel="noopener noreferrer"
@@ -48,7 +48,7 @@ export default function PostCard({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-2 top-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          className="absolute right-2 top-2 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           onClick={handleToggleDiscard}
           title="Discard post">
           <EyeOff className="h-4 w-4" />
@@ -58,7 +58,7 @@ export default function PostCard({
         <Link
           to={`/reader/${encodeURIComponent(link)}`}
           rel="noopener noreferrer"
-          className="hover:underline">
+          className="pr-8 hover:underline">
           <h3 className="mb-2 line-clamp-3 text-lg font-semibold sm:text-xl">
             {title}
           </h3>
