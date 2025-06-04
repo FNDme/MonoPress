@@ -61,7 +61,10 @@ export function RssProvider({ children }: { children: React.ReactNode }) {
   )
 
   const fetchFeeds = useCallback(async () => {
-    if (urls.length === 0) return
+    if (urls.length === 0) {
+      setLoading(false)
+      return
+    }
 
     setLoading(true)
     setError(null)

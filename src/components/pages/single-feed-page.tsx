@@ -1,32 +1,32 @@
-import { AlertCircle, ArrowLeft } from "lucide-react";
-import { useParams, useNavigate } from "react-router-dom";
-import { VirtuosoGrid } from "react-virtuoso";
+import PostCard from "@/components/container/post-card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { useRss } from "@/context/rss-context"
+import { useStore } from "@/store/store"
+import { AlertCircle, ArrowLeft } from "lucide-react"
+import { useMemo } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { VirtuosoGrid } from "react-virtuoso"
 
-import PostCard from "@/components/container/post-card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { useRss } from "@/context/rss-context";
-import Header from "../shared/layout/header";
-import Footer from "../shared/layout/footer";
-import { useMemo } from "react";
-import { useStore } from "@/store/store";
+import Footer from "../shared/layout/footer"
+import Header from "../shared/layout/header"
 
 export default function SingleFeedPage() {
-  const { url } = useParams<{ url: string }>();
-  const navigate = useNavigate();
-  const { discardedIds } = useStore();
-  const { postsByFeed, loading, error } = useRss();
+  const { url } = useParams<{ url: string }>()
+  const navigate = useNavigate()
+  const { discardedIds } = useStore()
+  const { postsByFeed, loading, error } = useRss()
 
-  const decodedUrl = url ? decodeURIComponent(url) : "";
-  const feedPosts = useMemo(() => {
+  const decodedUrl = url ? decodeURIComponent(url) : ""
+  const visiblePosts = useMemo(() => {
     return postsByFeed[decodedUrl].filter(
       (post) => !discardedIds.includes(post.id)
-    );
-  }, [postsByFeed, decodedUrl, discardedIds]);
+    )
+  }, [postsByFeed, decodedUrl, discardedIds])
   const feedName =
-    feedPosts[0]?.source?.sourceName ||
-    feedPosts[0]?.source?.title ||
-    decodedUrl;
+    visiblePosts[0]?.source?.sourceName ||
+    visiblePosts[0]?.source?.title ||
+    decodedUrl
 
   if (error) {
     return (
@@ -34,61 +34,73 @@ export default function SingleFeedPage() {
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{error}</AlertDescription>
       </Alert>
-    );
+    )
   }
 
   if (loading) {
     return (
-      <div className="h-screen flex flex-col bg-background">
+      <div className="flex h-screen flex-col bg-background">
         <Header />
         <div className="flex-1 overflow-auto">
           <div className="flex flex-row flex-wrap justify-center gap-6 p-8">
             {Array.from({ length: 10 }).map((_, index) => (
               <div
                 key={index}
-                className="w-full md:max-w-md h-[500px] bg-muted animate-pulse rounded-lg"
+                className="h-[500px] w-full animate-pulse rounded-lg bg-muted md:max-w-md"
               />
             ))}
           </div>
         </div>
         <Footer />
       </div>
-    );
+    )
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="flex h-screen flex-col bg-background">
       <Header />
-      <VirtuosoGrid
-        className="w-full max-w-[888px] mx-auto"
-        listClassName="flex flex-row flex-wrap gap-6 w-full justify-center"
-        totalCount={feedPosts.length}
-        data={feedPosts}
-        computeItemKey={(index) => feedPosts[index].id}
-        itemContent={(_index, data) => (
-          <PostCard post={data} className="w-[400px] h-[500px]" />
-        )}
-        components={{
-          Header: () => (
-            <div className="px-4 py-8 flex items-center gap-4 max-w-[888px] mx-auto">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate("/")}
-                className="shrink-0"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <h1 className="text-2xl font-bold">{feedName}</h1>
-            </div>
-          ),
-          Footer: () => <div className="h-6" />,
-          ScrollSeekPlaceholder: () => (
-            <div className="w-full h-[500px] bg-muted animate-pulse rounded-lg" />
-          ),
-        }}
-      />
+      {visiblePosts.length === 0 ? (
+        <div className="mx-auto my-12 flex w-full max-w-[888px] flex-1 justify-center overflow-auto">
+          <Alert className="h-fit w-fit max-w-[400px]">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              No posts found.
+              <br />
+              Please check your internet connection
+            </AlertDescription>
+          </Alert>
+        </div>
+      ) : (
+        <VirtuosoGrid
+          className="mx-auto w-full max-w-[888px]"
+          listClassName="flex flex-row flex-wrap gap-6 w-full justify-center"
+          totalCount={visiblePosts.length}
+          data={visiblePosts}
+          computeItemKey={(index) => visiblePosts[index].id}
+          itemContent={(_index, data) => (
+            <PostCard post={data} className="h-[500px] w-[400px]" />
+          )}
+          components={{
+            Header: () => (
+              <div className="mx-auto flex max-w-[888px] items-center gap-4 px-4 py-8">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate("/")}
+                  className="shrink-0">
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <h1 className="text-2xl font-bold">{feedName}</h1>
+              </div>
+            ),
+            Footer: () => <div className="h-6" />,
+            ScrollSeekPlaceholder: () => (
+              <div className="h-[500px] w-full animate-pulse rounded-lg bg-muted" />
+            )
+          }}
+        />
+      )}
       <Footer />
     </div>
-  );
+  )
 }
