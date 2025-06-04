@@ -1,24 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Newspaper, Settings, Globe } from "lucide-react";
-import { useStore } from "@/store/store";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { useRss } from "@/context/rss-context";
+import { Favicon } from "@/assets/favicon"
+import { ThemeToggle } from "@/components/shared/theme-toggle"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Favicon } from "@/assets/favicon";
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { useRss } from "@/context/rss-context"
+import { useStore } from "@/store/store"
+import { Eye, EyeOff, Globe, Newspaper, Settings } from "lucide-react"
+import { Link, useNavigate } from "react-router-dom"
 
-function Header() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { showDiscarded, toggleDiscarded, discardedIds } = useStore();
-  const { postsByFeed } = useRss();
-
-  const isFeedPage = location.pathname === "/";
+function Header({ isFeedPage = false }: { isFeedPage?: boolean }) {
+  const navigate = useNavigate()
+  const { showDiscarded, toggleDiscarded, discardedIds } = useStore()
+  const { postsByFeed } = useRss()
 
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 mx-auto w-full border-b shadow-sm backdrop-blur">
@@ -30,7 +27,7 @@ function Header() {
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          {isFeedPage && discardedIds.length > 0 && (
+          {isFeedPage && (discardedIds.length > 0 || showDiscarded) && (
             <Button variant="ghost" size="icon" onClick={toggleDiscarded}>
               {showDiscarded ? (
                 <Eye className="h-4 w-4" />
@@ -51,17 +48,16 @@ function Header() {
                   const sourceName =
                     posts[0]?.source?.sourceName ||
                     posts[0]?.source?.title ||
-                    url;
+                    url
                   return (
                     <DropdownMenuItem
                       key={url}
                       onClick={() =>
                         navigate(`/feed/${encodeURIComponent(url)}`)
-                      }
-                    >
+                      }>
                       {sourceName}
                     </DropdownMenuItem>
-                  );
+                  )
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -71,9 +67,8 @@ function Header() {
               variant="ghost"
               size="icon"
               onClick={() => {
-                navigate("/config");
-              }}
-            >
+                navigate("/config")
+              }}>
               <Settings className="h-4 w-4" />
             </Button>
           ) : (
@@ -81,9 +76,8 @@ function Header() {
               variant="ghost"
               size="icon"
               onClick={() => {
-                navigate("/");
-              }}
-            >
+                navigate("/")
+              }}>
               <Newspaper className="h-4 w-4" />
             </Button>
           )}
@@ -91,7 +85,7 @@ function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

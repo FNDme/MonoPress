@@ -1,7 +1,6 @@
 import ConfigPage from "@/components/pages/config-page"
 import FeedPage from "@/components/pages/feed-page"
 import ReaderPage from "@/components/pages/reader-page"
-import SingleFeedPage from "@/components/pages/single-feed-page"
 import { ThemeProvider } from "@/context/theme-context"
 import { HashRouter, Route, Routes } from "react-router-dom"
 
@@ -16,7 +15,7 @@ function App() {
             <Route path="/" element={<FeedPage />} />
             <Route path="/config" element={<ConfigPage />} />
             <Route path="/reader/:url" element={<ReaderPage />} />
-            <Route path="/feed/:url" element={<SingleFeedPage />} />
+            <Route path="/feed/:url" element={<FeedPage />} />
           </Routes>
         </RssProvider>
       </ThemeProvider>

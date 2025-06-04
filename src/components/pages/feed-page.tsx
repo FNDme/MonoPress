@@ -2,22 +2,43 @@ import PostCard from "@/components/container/post-card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useRss } from "@/context/rss-context"
 import { useStore } from "@/store/store"
-import { AlertCircle } from "lucide-react"
-import { useMemo } from "react"
+import { AlertCircle, ArrowLeft } from "lucide-react"
+import { useEffect, useMemo } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import { VirtuosoGrid } from "react-virtuoso"
+
+import { Button } from "~components/ui/button"
 
 import Footer from "../shared/layout/footer"
 import Header from "../shared/layout/header"
 
 export default function FeedPage() {
-  const { discardedIds, showDiscarded } = useStore()
-  const { posts, loading, error } = useRss()
+  const navigate = useNavigate()
+  const { url } = useParams<{ url: string }>()
+  const { discardedIds, showDiscarded, setShowDiscarded } = useStore()
+  const { posts, postsByFeed, loading, error } = useRss()
+
+  const decodedUrl = url ? decodeURIComponent(url) : ""
 
   const visiblePosts = useMemo(() => {
+    if (url) {
+      return postsByFeed[decodedUrl].filter(
+        (post) => !discardedIds.includes(post.id)
+      )
+    }
     if (showDiscarded)
       return posts.filter((post) => discardedIds.includes(post.id))
     return posts.filter((post) => !discardedIds.includes(post.id))
-  }, [posts, discardedIds, showDiscarded])
+  }, [posts, discardedIds, showDiscarded, decodedUrl, postsByFeed])
+
+  useEffect(() => {
+    setShowDiscarded(false)
+  }, [])
+
+  const feedName =
+    visiblePosts[0]?.source?.sourceName ||
+    visiblePosts[0]?.source?.title ||
+    decodedUrl
 
   if (error) {
     return (
@@ -49,7 +70,7 @@ export default function FeedPage() {
 
   return (
     <div className="flex h-screen flex-col bg-background">
-      <Header />
+      <Header isFeedPage={!url} />
       {visiblePosts.length === 0 ? (
         <div className="mx-auto my-12 flex w-full max-w-[888px] flex-1 justify-center overflow-auto">
           <Alert className="h-fit w-fit max-w-[400px]">
@@ -72,7 +93,23 @@ export default function FeedPage() {
             <PostCard post={data} className="h-[500px] w-[400px]" />
           )}
           components={{
-            Header: () => <div className="h-6" />,
+            Header: () => {
+              if (!url) {
+                return <div className="h-6" />
+              }
+              return (
+                <div className="mx-auto flex max-w-[888px] items-center gap-4 px-4 py-8">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => navigate("/")}
+                    className="shrink-0">
+                    <ArrowLeft className="h-4 w-4" />
+                  </Button>
+                  <h1 className="text-2xl font-bold">{feedName}</h1>
+                </div>
+              )
+            },
             Footer: () => <div className="h-6" />,
             ScrollSeekPlaceholder: () => (
               <div className="h-[500px] w-full animate-pulse rounded-lg bg-muted" />
