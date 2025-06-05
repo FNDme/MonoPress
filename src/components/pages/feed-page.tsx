@@ -56,7 +56,7 @@ export default function FeedPage() {
 
   if (loading) {
     return (
-      <div className="flex h-screen flex-col bg-background">
+      <div className="flex h-screen flex-col overflow-x-hidden bg-background">
         <Header />
         <div className="flex-1 overflow-auto">
           <div className="mx-auto flex w-full max-w-[888px] flex-row flex-wrap justify-center gap-6 p-8 pt-6">
@@ -94,6 +94,7 @@ export default function FeedPage() {
           totalCount={visiblePosts.length}
           data={visiblePosts}
           computeItemKey={(index) => visiblePosts[index].id}
+          useWindowScroll
           itemContent={(_index, data) => (
             <PostCard post={data} className="h-[500px] w-[400px]" />
           )}
@@ -122,7 +123,6 @@ export default function FeedPage() {
           }}
         />
       )}
-      <Footer />
     </div>
   )
 }

@@ -32,12 +32,12 @@ export default function PostCard({
         "group max-h-[500px] gap-0 overflow-hidden p-0 transition-all duration-300 hover:shadow-lg md:max-w-md",
         className
       )}>
-      <CardHeader className="relative">
+      <CardHeader className="relative p-0">
         <Link
           to={`/reader/${encodeURIComponent(link)}`}
           rel="noopener noreferrer"
           className="relative">
-          {image && (
+          {!!image && (
             <img
               src={image}
               alt={title}
